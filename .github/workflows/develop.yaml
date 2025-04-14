@@ -37,6 +37,7 @@ jobs:
       - name: update repo code
         run: |
           cd code
+          mkdir codeTmp
           ./node_modules/.bin/grunt vb-export --git-sources=codeTmp --url=${{ vars.VISUAL_BUILDER_INSTANCE_URL }} --id=${{ vars.VISUAL_BUILDER_INSTANCE_ID }} --ver=${{ vars.VISUAL_BUILDER_INSTANCE_VER }} --accessToken=$TOKEN
 
 
@@ -57,6 +58,6 @@ jobs:
           git config --global user.email "github-actions@localhost"
           
           git add .
-          git commit -m "update repo code"
+          git commit -m "teste"
           git push origin ${{ github.ref_name }}
 
