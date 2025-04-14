@@ -28,8 +28,8 @@ jobs:
 
           curl --location '${{ vars.VISUAL-BUILDER-INSTANCE-URL }}/ic/builder/public/token' \
           --header 'Content-Type: application/x-www-form-urlencoded' \
-          --data-urlencode 'password=${{ secrets.VISUAL-BUILDER-USER-PASSWORD }} ' \
-          --data-urlencode 'username=${{ vars.VISUAL-BUILDER-USER-NAME }}'
+          --data-urlencode 'password=${{ secrets.VISUAL_BUILDER_USER_PASSWORD }} ' \
+          --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}'
           jq -r '.access_token' | export TOKEN
           
           ::add-mask::echo "${TOKEN}"
@@ -39,8 +39,8 @@ jobs:
       - name: update repo code
         run: |
           cd code
-          ./node_modules/.bin/grunt vb-export --git-sources=code --url=${{ vars.VISUAL-BUILDER-INSTANCE-URL }} --id=${{ vars.VISUAL-BUILDER-INSTANCE-ID }} --ver=${{ vars.VISUAL-BUILDER-INSTANCE-VER }}
-          --accessToken=${{ secrets.VISUAL-BUILDER-ACCESS-TOKEN }} 
+          ./node_modules/.bin/grunt vb-export --git-sources=code --url=${{ vars.VISUAL_BUILDER_INSTANCE_URL }} --id=${{ vars.VISUAL_BUILDER_INSTANCE_ID }} --ver=${{ vars.VISUAL_BUILDER_INSTANCE_VER }}
+          --accessToken=${{ env.TOKEN }} 
 
       - name: listar files
         run: |
