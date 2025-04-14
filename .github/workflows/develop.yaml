@@ -1,10 +1,11 @@
-name: Unzip File
-
+name: get source code from visual builder
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
+  
 jobs:
   unzip:
     runs-on: ubuntu-latest
@@ -32,7 +33,7 @@ jobs:
           --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}'
           jq -r '.access_token' | export TOKEN
           
-          ::add-mask::echo "${TOKEN}"
+          ::add-mask::${TOKEN}
           echo "token=${TOKEN}" >> $GITHUB_ENV
 
 
