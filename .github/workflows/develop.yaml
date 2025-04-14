@@ -38,8 +38,12 @@ jobs:
         run: |
           cd code
           ./node_modules/.bin/grunt vb-export --git-sources=codeTmp --url=${{ vars.VISUAL_BUILDER_INSTANCE_URL }} --id=${{ vars.VISUAL_BUILDER_INSTANCE_ID }} --ver=${{ vars.VISUAL_BUILDER_INSTANCE_VER }} --accessToken=$TOKEN
-          
-          mv -f codeTmp/* .
+
+
+      - name: copy files
+        run: |
+          cd code
+          cp -R codeTmp/* .
           rm -rf codeTmp
 
       - name: listar files
