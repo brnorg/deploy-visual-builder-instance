@@ -1,0 +1,58 @@
+name: Unzip File
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd code
+          npm install
+
+      - name: get token
+        run: |
+
+          curl --location '${{ vars.VISUAL-BUILDER-INSTANCE-URL }}/ic/builder/public/token' \
+          --header 'Content-Type: application/x-www-form-urlencoded' \
+          --data-urlencode 'password=${{ secrets.VISUAL-BUILDER-USER-PASSWORD }} ' \
+          --data-urlencode 'username=${{ vars.VISUAL-BUILDER-USER-NAME }}'
+          jq -r '.access_token' | export TOKEN
+          
+          ::add-mask::echo "${TOKEN}"
+          echo "token=${TOKEN}" >> $GITHUB_ENV
+
+
+      - name: update repo code
+        run: |
+          cd code
+          ./node_modules/.bin/grunt vb-export --git-sources=code --url=${{ vars.VISUAL-BUILDER-INSTANCE-URL }} --id=${{ vars.VISUAL-BUILDER-INSTANCE-ID }} --ver=${{ vars.VISUAL-BUILDER-INSTANCE-VER }}
+          --accessToken=${{ secrets.VISUAL-BUILDER-ACCESS-TOKEN }} 
+
+      - name: listar files
+        run: |
+          cd code
+          ls -alh
+
+      - name: commit-files:
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@localhost"
+          
+          git add .
+          git commit -m "update repo code"
+          git push origin ${{ github.ref_name }}
+
