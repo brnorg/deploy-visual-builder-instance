@@ -20,7 +20,7 @@ jobs:
           --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}'
           jq -r '.access_token')
           
-          echo "::add-mask::${TOKEN}"
+          # echo "::add-mask::${TOKEN}"
           echo "TOKEN=${TOKEN}" >> $GITHUB_ENV
 
       - name: Checkout code
