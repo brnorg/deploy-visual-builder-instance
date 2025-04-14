@@ -16,7 +16,7 @@ jobs:
           curl --location '${{ vars.VISUAL_BUILDER_INSTANCE_URL }}/public/token' \
             --header 'Content-Type: application/x-www-form-urlencoded' \
             --data-urlencode 'password=${{ secrets.VISUAL_BUILDER_USER_PASSWORD }}' \
-            --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}'
+            --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}' | jq -r '.access_token'
 
 
       # - name: get token
