@@ -13,13 +13,11 @@ jobs:
     steps:
       - name: get token
         run: |
-
           export TOKEN=$(curl --location '${{ vars.VISUAL_BUILDER_INSTANCE_URL }}/ic/builder/public/token' \
-          --header 'Content-Type: application/x-www-form-urlencoded' \
-          --data-urlencode 'password=${{ secrets.VISUAL_BUILDER_USER_PASSWORD }} ' \
-          --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}'
-          jq -r '.access_token')
-          
+            --header 'Content-Type: application/x-www-form-urlencoded' \
+            --data-urlencode 'password=${{ secrets.VISUAL_BUILDER_USER_PASSWORD }}' \
+            --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}' | jq -r '.access_token')
+
           # echo "::add-mask::${TOKEN}"
           echo "TOKEN=${TOKEN}" >> $GITHUB_ENV
 
