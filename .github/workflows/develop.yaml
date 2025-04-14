@@ -7,7 +7,7 @@ on:
 
 
 jobs:
-  unzip:
+  get-source-code:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,7 @@ jobs:
           jq -r '.access_token')
           
           echo "::add-mask::${TOKEN}"
-          echo "token=${TOKEN}" >> $GITHUB_ENV
+          echo "TOKEN=${TOKEN}" >> $GITHUB_ENV
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
         run: |
           cd code
           ./node_modules/.bin/grunt vb-export --git-sources=code --url=${{ vars.VISUAL_BUILDER_INSTANCE_URL }} --id=${{ vars.VISUAL_BUILDER_INSTANCE_ID }} --ver=${{ vars.VISUAL_BUILDER_INSTANCE_VER }}
-          --accessToken=${{ env.TOKEN }} 
+          --accessToken=$TOKEN
 
       - name: listar files
         run: |
