@@ -5,12 +5,24 @@ on:
       - main
   workflow_dispatch:
 
-  
+
 jobs:
   unzip:
     runs-on: ubuntu-latest
 
     steps:
+      - name: get token
+        run: |
+
+          curl --location '${{ vars.VISUAL_BUILDER_INSTANCE_URL }}/ic/builder/public/token' \
+          --header 'Content-Type: application/x-www-form-urlencoded' \
+          --data-urlencode 'password=${{ secrets.VISUAL_BUILDER_USER_PASSWORD }} ' \
+          --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}'
+          jq -r '.access_token' | export TOKEN
+          
+          echo "::add-mask::${TOKEN}"
+          echo "token=${TOKEN}" >> $GITHUB_ENV
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -23,19 +35,6 @@ jobs:
         run: |
           cd code
           npm install
-
-      - name: get token
-        run: |
-
-          curl --location '${{ vars.VISUAL_BUILDER_INSTANCE_URL }}/ic/builder/public/token' \
-          --header 'Content-Type: application/x-www-form-urlencoded' \
-          --data-urlencode 'password=${{ secrets.VISUAL_BUILDER_USER_PASSWORD }} ' \
-          --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}'
-          jq -r '.access_token' | export TOKEN
-          
-          ::add-mask::${TOKEN}
-          echo "token=${TOKEN}" >> $GITHUB_ENV
-
 
       - name: update repo code
         run: |
