@@ -67,4 +67,5 @@ jobs:
         run: |
           cd code
           mkdir codeTmp
+          ./node_modules/.bin/grunt vb-process-local
           ./node_modules/.bin/grunt vb-deploy --publish=true --url=${{ vars.VISUAL_BUILDER_INSTANCE_URL }} --id=${{ vars.VISUAL_BUILDER_INSTANCE_ID }} --ver=${{ inputs.version }}h --accessToken=$TOKEN
