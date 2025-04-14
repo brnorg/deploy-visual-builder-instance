@@ -13,52 +13,44 @@ jobs:
     steps:
       - name: get token
         run: |
-          curl --location '${{ vars.VISUAL_BUILDER_INSTANCE_URL }}/public/token' \
+          export TOKEN=$(curl --location '${{ vars.VISUAL_BUILDER_INSTANCE_URL }}/public/token' \
             --header 'Content-Type: application/x-www-form-urlencoded' \
             --data-urlencode 'password=${{ secrets.VISUAL_BUILDER_USER_PASSWORD }}' \
-            --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}' | jq -r '.access_token'
+            --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}' | jq -r '.access_token')
 
+          # echo "::add-mask::${TOKEN}"
+          echo "TOKEN=${TOKEN}" >> $GITHUB_ENV
 
-      # - name: get token
-      #   run: |
-      #     export TOKEN=$(curl --location '${{ vars.VISUAL_BUILDER_INSTANCE_URL }}/ic/builder/public/token' \
-      #       --header 'Content-Type: application/x-www-form-urlencoded' \
-      #       --data-urlencode 'password=${{ secrets.VISUAL_BUILDER_USER_PASSWORD }}' \
-      #       --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}' | jq -r '.access_token')
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      #     # echo "::add-mask::${TOKEN}"
-      #     echo "TOKEN=${TOKEN}" >> $GITHUB_ENV
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
-      # - name: Checkout code
-      #   uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          cd code
+          npm install
 
-      # - name: Setup Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: '18'
+      - name: update repo code
+        run: |
+          cd code
+          ./node_modules/.bin/grunt vb-export --git-sources=code --url=${{ vars.VISUAL_BUILDER_INSTANCE_URL }} --id=${{ vars.VISUAL_BUILDER_INSTANCE_ID }} --ver=${{ vars.VISUAL_BUILDER_INSTANCE_VER }}
+          --accessToken=$TOKEN
 
-      # - name: Install dependencies
-      #   run: |
-      #     cd code
-      #     npm install
+      - name: listar files
+        run: |
+          cd code
+          ls -alh
 
-      # - name: update repo code
-      #   run: |
-      #     cd code
-      #     ./node_modules/.bin/grunt vb-export --git-sources=code --url=${{ vars.VISUAL_BUILDER_INSTANCE_URL }} --id=${{ vars.VISUAL_BUILDER_INSTANCE_ID }} --ver=${{ vars.VISUAL_BUILDER_INSTANCE_VER }}
-      #     --accessToken=$TOKEN
-
-      # - name: listar files
-      #   run: |
-      #     cd code
-      #     ls -alh
-
-      # - name: commit-files
-      #   run: |
-      #     git config --global user.name "github-actions"
-      #     git config --global user.email "github-actions@localhost"
+      - name: commit-files
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@localhost"
           
-      #     git add .
-      #     git commit -m "update repo code"
-      #     git push origin ${{ github.ref_name }}
+          git add .
+          git commit -m "update repo code"
+          git push origin ${{ github.ref_name }}
 
