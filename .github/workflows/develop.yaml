@@ -18,7 +18,7 @@ jobs:
             --data-urlencode 'password=${{ secrets.VISUAL_BUILDER_USER_PASSWORD }}' \
             --data-urlencode 'username=${{ vars.VISUAL_BUILDER_USER_NAME }}' | jq -r '.access_token')
 
-          # echo "::add-mask::${TOKEN}"
+          echo "::add-mask::${TOKEN}"
           echo "TOKEN=${TOKEN}" >> $GITHUB_ENV
 
       - name: Checkout code
@@ -37,7 +37,7 @@ jobs:
       - name: update repo code
         run: |
           cd code
-          ./node_modules/.bin/grunt vb-export --git-sources=code --url=${{ vars.VISUAL_BUILDER_INSTANCE_URL }} --id=${{ vars.VISUAL_BUILDER_INSTANCE_ID }} --ver=${{ vars.VISUAL_BUILDER_INSTANCE_VER }} --accessToken=$TOKEN
+          ./node_modules/.bin/grunt vb-export --url=${{ vars.VISUAL_BUILDER_INSTANCE_URL }} --id=${{ vars.VISUAL_BUILDER_INSTANCE_ID }} --ver=${{ vars.VISUAL_BUILDER_INSTANCE_VER }} --accessToken=$TOKEN
 
       - name: listar files
         run: |
