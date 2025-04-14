@@ -47,7 +47,7 @@ jobs:
           cd code
           ls -alh
 
-      - name: commit-files:
+      - name: commit-files
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@localhost"
