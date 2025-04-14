@@ -4,7 +4,11 @@ on:
     branches:
       - main
   workflow_dispatch:
-
+    inputs:
+      version:
+        description: 'Version to be used'
+        required: true
+        default: '1.0.0'
 
 jobs:
   get-source-code:
@@ -38,7 +42,7 @@ jobs:
         run: |
           cd code
           mkdir codeTmp
-          ./node_modules/.bin/grunt vb-export --git-sources=codeTmp --url=${{ vars.VISUAL_BUILDER_INSTANCE_URL }} --id=${{ vars.VISUAL_BUILDER_INSTANCE_ID }} --ver=${{ vars.VISUAL_BUILDER_INSTANCE_VER }} --accessToken=$TOKEN
+          ./node_modules/.bin/grunt vb-export --git-sources=codeTmp --url=${{ vars.VISUAL_BUILDER_INSTANCE_URL }} --id=${{ vars.VISUAL_BUILDER_INSTANCE_ID }} --ver=${{ inputs.version }} --accessToken=$TOKEN
 
 
       - name: copy files
